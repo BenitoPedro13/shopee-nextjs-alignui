@@ -106,7 +106,7 @@ const HorizontalStepperItem = React.forwardRef<
   };
 
   const extendedChildren = recursiveCloneChildren(
-    children as React.ReactElement[],
+    children as React.ReactElement<any>[],
     sharedProps,
     [HORIZONTAL_STEPPER_ITEM_INDICATOR_NAME],
     uniqueId,

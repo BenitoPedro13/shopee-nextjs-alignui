@@ -110,7 +110,7 @@ const CompactButtonRoot = React.forwardRef<
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [COMPACT_BUTTON_ICON_NAME],
       uniqueId,

@@ -64,7 +64,7 @@ function AvatarGroupCompactRoot({
   };
 
   const extendedChildren = recursiveCloneChildren(
-    children as React.ReactElement[],
+    children as React.ReactElement<any>[],
     sharedProps,
     [AVATAR_ROOT_NAME, AVATAR_GROUP_COMPACT_OVERFLOW_NAME],
     uniqueId,

@@ -108,7 +108,7 @@ const StatusBadgeRoot = React.forwardRef<HTMLDivElement, StatusBadgeRootProps>(
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [STATUS_BADGE_ICON_NAME, STATUS_BADGE_DOT_NAME],
       uniqueId,

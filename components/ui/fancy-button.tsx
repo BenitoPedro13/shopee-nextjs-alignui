@@ -103,7 +103,7 @@ const FancyButtonRoot = React.forwardRef<HTMLButtonElement, FancyButtonProps>(
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [FANCY_BUTTON_ICON_NAME],
       uniqueId,

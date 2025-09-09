@@ -181,7 +181,7 @@ const AvatarRoot = React.forwardRef<HTMLDivElement, AvatarRootProps>(
     }
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [AVATAR_IMAGE_NAME, AVATAR_INDICATOR_NAME],
       uniqueId,

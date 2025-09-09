@@ -270,7 +270,7 @@ const ButtonRoot = React.forwardRef<HTMLButtonElement, ButtonRootProps>(
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [BUTTON_ICON_NAME],
       uniqueId,

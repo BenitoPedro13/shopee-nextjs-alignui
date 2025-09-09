@@ -200,7 +200,7 @@ const SocialButtonRoot = React.forwardRef<HTMLButtonElement, SocialButtonProps>(
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [SOCIAL_BUTTON_ICON_NAME],
       uniqueId,

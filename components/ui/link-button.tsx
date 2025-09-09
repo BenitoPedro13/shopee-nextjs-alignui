@@ -100,7 +100,7 @@ const LinkButtonRoot = React.forwardRef<HTMLButtonElement, LinkButtonProps>(
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [LINK_BUTTON_ICON_NAME],
       uniqueId,

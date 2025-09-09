@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
+import ThemeSwitch from './theme-switch';
 
-const DynamicThemeSwitch = dynamic(() => import('./theme-switch'), {
-  ssr: false,
-});
+// const DynamicThemeSwitch = dynamic(() => import('./theme-switch'), {
+//   ssr: false,
+// });
 
 export default function Header() {
   return (
@@ -22,7 +23,7 @@ export default function Header() {
           AlignUI
         </Link>
 
-        <DynamicThemeSwitch />
+        <ThemeSwitch />
       </header>
     </div>
   );

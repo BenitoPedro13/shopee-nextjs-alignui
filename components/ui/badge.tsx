@@ -441,7 +441,7 @@ const BadgeRoot = React.forwardRef<HTMLDivElement, BadgeRootProps>(
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [BADGE_ICON_NAME, BADGE_DOT_NAME],
       uniqueId,

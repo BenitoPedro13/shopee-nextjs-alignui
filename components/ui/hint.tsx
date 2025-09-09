@@ -50,7 +50,7 @@ function HintRoot({
   };
 
   const extendedChildren = recursiveCloneChildren(
-    children as React.ReactElement[],
+    children as React.ReactElement<any>[],
     sharedProps,
     [HINT_ICON_NAME],
     uniqueId,

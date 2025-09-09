@@ -174,7 +174,7 @@ function InputRoot({
   };
 
   const extendedChildren = recursiveCloneChildren(
-    children as React.ReactElement[],
+    children as React.ReactElement<any>[],
     sharedProps,
     [
       INPUT_WRAPPER_NAME,

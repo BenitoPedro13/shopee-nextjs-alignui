@@ -249,7 +249,7 @@ const AlertRoot = React.forwardRef<HTMLDivElement, AlertProps>(
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [ALERT_ICON_NAME, ALERT_CLOSE_ICON_NAME],
       uniqueId,

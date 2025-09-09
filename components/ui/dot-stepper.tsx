@@ -60,7 +60,7 @@ function DotStepperRoot({
   };
 
   const extendedChildren = recursiveCloneChildren(
-    children as React.ReactElement[],
+    children as React.ReactElement<any>[],
     sharedProps,
     [DOT_STEPPER_ITEM_NAME],
     uniqueId,

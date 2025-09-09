@@ -94,7 +94,7 @@ const ButtonGroupRoot = React.forwardRef<HTMLDivElement, ButtonGroupRootProps>(
     };
 
     const extendedChildren = recursiveCloneChildren(
-      children as React.ReactElement[],
+      children as React.ReactElement<any>[],
       sharedProps,
       [BUTTON_GROUP_ITEM_NAME, BUTTON_GROUP_ICON_NAME],
       uniqueId,
