@@ -3,8 +3,13 @@ import dadosProductJson from '@/app/data/products.json';
 import * as Input from '../ui/input';
 import * as Label from '../ui/dropdown';
 import { Edu_TAS_Beginner } from 'next/font/google';
+import { prisma } from '@/db/client';
 
 type TProductsJson = typeof dadosProductJson;
+
+async function getProducy() {
+  return await prisma.productdetail.findFirst({ select: { data: true } });
+}
 
 //Pegando o título do produto.
 function getProductTitle(json: TProductsJson) {
@@ -55,7 +60,9 @@ let lessIndex = 0;
 const shipping = getShipping(dadosProductJson);
 const { edt_min, edt_max } = shipping[lessIndex];
 
-const ProductList = () => {
+const ProductList = async () => {
+  const takeAllProducts = await getProducy();
+  console.log(`takeAllProducts`, takeAllProducts);
   console.log(dadosProductJson);
   console.log(getShipping(dadosProductJson));
   return (
