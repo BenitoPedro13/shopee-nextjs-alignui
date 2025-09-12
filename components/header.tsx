@@ -23,7 +23,7 @@ export default function Header() {
           AlignUI
         </Link>
 
-        <ThemeSwitch />
+        {/* <ThemeSwitch /> */}
       </header>
     </div>
   );
