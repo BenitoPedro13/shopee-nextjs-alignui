@@ -1,0 +1,305 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model alerta_erro {
+  id      Int       @id @default(autoincrement())
+  texto   String    @db.MediumText
+  excecao String    @db.MediumText
+  data    DateTime? @default(now()) @db.DateTime(0)
+}
+
+model anuncio_atributo_variacao_shopee {
+  id                         Int                     @id @default(autoincrement())
+  anuncio_variacao_shopee_id Int
+  nome_attr                  String                  @db.VarChar(100)
+  valor_attr                 String                  @db.VarChar(150)
+  anuncio_variacao_shopee    anuncio_variacao_shopee @relation(fields: [anuncio_variacao_shopee_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_anuncio_attr")
+
+  @@index([anuncio_variacao_shopee_id], map: "fk_anuncio_attr")
+}
+
+model anuncio_descricao_shopee {
+  id                           Int                       @id @default(autoincrement())
+  anuncio_fornecedor_shopee_id Int
+  descricao                    String                    @db.Text
+  anuncio_fornecedor_shopee    anuncio_fornecedor_shopee @relation(fields: [anuncio_fornecedor_shopee_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_anuncio_desc")
+
+  @@index([anuncio_fornecedor_shopee_id], map: "fk_anuncio_desc")
+}
+
+model anuncio_fornecedor_shopee {
+  id                       Int                        @id @default(autoincrement())
+  produto_id               Int
+  item_id                  String                     @unique(map: "item_id_UNIQUE") @db.VarChar(50)
+  shop_id                  String                     @db.VarChar(50)
+  titulo                   String                     @db.VarChar(200)
+  categoria                String                     @db.VarChar(200)
+  cep                      String?                    @db.VarChar(6)
+  tempo_entrega_min        Int?                       @db.TinyInt
+  tempo_entrega_max        Int?                       @db.TinyInt
+  ultima_atualizacao       DateTime?                  @default(now()) @db.DateTime(0)
+  anuncio_descricao_shopee anuncio_descricao_shopee[]
+  produto                  produto                    @relation(fields: [produto_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_anuncio_prod")
+  anuncio_variacao_shopee  anuncio_variacao_shopee[]
+
+  @@index([produto_id], map: "fk_anuncio_prod")
+}
+
+model anuncio_foto_shopee {
+  id                         Int                     @id @default(autoincrement())
+  anuncio_variacao_shopee_id Int
+  url                        String                  @db.VarChar(255)
+  anuncio_variacao_shopee    anuncio_variacao_shopee @relation(fields: [anuncio_variacao_shopee_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_anuncio_foto")
+
+  @@index([anuncio_variacao_shopee_id], map: "fk_anuncio_foto")
+}
+
+model anuncio_variacao_shopee {
+  id                               Int                                @id @default(autoincrement())
+  anuncio_fornecedor_shopee_id     Int
+  sku                              String                             @db.VarChar(100)
+  estoque                          Int                                @default(0) @db.SmallInt
+  preco_venda                      Decimal                            @default(0.00) @db.Decimal(10, 2)
+  tempo_entrega                    Int                                @default(0) @db.TinyInt
+  anuncio_atributo_variacao_shopee anuncio_atributo_variacao_shopee[]
+  anuncio_foto_shopee              anuncio_foto_shopee[]
+  anuncio_fornecedor_shopee        anuncio_fornecedor_shopee          @relation(fields: [anuncio_fornecedor_shopee_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_anuncio_var")
+
+  @@index([anuncio_fornecedor_shopee_id], map: "fk_anuncio_var")
+}
+
+model atributo_ml {
+  id                    Int                     @id @default(autoincrement())
+  nome                  String                  @db.VarChar(100)
+  traducao              String                  @db.VarChar(100)
+  categoria_atributo_ml categoria_atributo_ml[]
+
+  @@unique([traducao, nome], map: "unique_nome_traducao")
+}
+
+model atributo_valor_padrao_ml {
+  id           Int    @id @default(autoincrement())
+  id_att       Int
+  valor_padrao String @db.VarChar(150)
+
+  @@unique([valor_padrao, id_att], map: "unique_valor_padrao_id_att")
+  @@index([id_att], map: "id_idx")
+}
+
+model categoria_atributo_ml {
+  id_cat         Int
+  id_att         Int
+  is_obrigatorio Int?         @default(0) @db.TinyInt
+  atributo_ml    atributo_ml  @relation(fields: [id_att], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_att")
+  categoria_ml   categoria_ml @relation(fields: [id_cat], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "id_cat")
+
+  @@id([id_cat, id_att])
+  @@index([id_att], map: "id_att_idx")
+}
+
+model categoria_ml {
+  id                    Int                     @id @default(autoincrement())
+  codigo                String                  @db.VarChar(45)
+  nome                  String                  @db.VarChar(150)
+  valor                 Decimal                 @db.Decimal(10, 2)
+  categoria_atributo_ml categoria_atributo_ml[]
+
+  @@index([codigo], map: "idx_cat")
+}
+
+model fornecedor {
+  id                 Int                  @id @default(autoincrement())
+  user_id            String               @db.VarChar(50)
+  nome               String               @db.VarChar(150)
+  uf                 String?              @db.VarChar(2)
+  cep                String?              @db.VarChar(6)
+  canal              String               @db.VarChar(50)
+  fornecedor_produto fornecedor_produto[]
+}
+
+model fornecedor_produto {
+  id            Int        @id @default(autoincrement())
+  fornecedor_id Int
+  produto_id    Int
+  fornecedor    fornecedor @relation(fields: [fornecedor_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_forn_prod_forn")
+  produto       produto    @relation(fields: [produto_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_forn_prod_prod")
+
+  @@index([fornecedor_id], map: "fk_forn_prod_forn")
+  @@index([produto_id], map: "fk_forn_prod_prod")
+}
+
+model hikari_config {
+  id                        Int  @id @db.TinyInt
+  connectionTimeout         Int? @db.MediumInt
+  idleTimeout               Int? @db.MediumInt
+  maxLifetime               Int? @db.MediumInt
+  leakDetectionThreshold    Int? @db.MediumInt
+  maximumPoolSize           Int? @db.TinyInt
+  minimumIdle               Int? @db.TinyInt
+  validationTimeout         Int? @db.SmallInt
+  initializationFailTimeout Int? @db.SmallInt
+}
+
+model productdetail {
+  id              Int           @id @default(autoincrement())
+  searchProductId Int
+  itemid          BigInt
+  shopid          BigInt
+  url             String?
+  apiVersion      String?
+  data            Json?
+  contentHash     String?       @db.VarChar(64)
+  capturedAt      DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime
+  searchproduct   searchproduct @relation(fields: [searchProductId], references: [id], onDelete: Cascade, map: "ProductDetail_searchProductId_fkey")
+
+  @@unique([itemid, shopid, contentHash], map: "ProductDetail_itemid_shopid_contentHash_key")
+  @@index([itemid, shopid, capturedAt], map: "ProductDetail_itemid_shopid_capturedAt_idx")
+  @@index([itemid, shopid], map: "ProductDetail_itemid_shopid_idx")
+  @@index([searchProductId], map: "ProductDetail_searchProductId_fkey")
+}
+
+model produto {
+  id                        Int                         @id @default(autoincrement())
+  sku                       String                      @unique(map: "sku_UNIQUE") @db.VarChar(50)
+  peso                      Decimal?                    @default(0.00) @db.Decimal(10, 2)
+  correios_nivel            Int?                        @default(1) @db.TinyInt
+  ncm                       String?                     @db.VarChar(10)
+  ean                       String?                     @db.VarChar(20)
+  cest                      String?                     @db.VarChar(20)
+  estoque_minimo            Int?                        @default(1) @db.TinyInt
+  is_desativado             Boolean?                    @default(false)
+  is_analisar               Boolean?                    @default(false)
+  versao_analise            Int?                        @default(0)
+  anuncio_fornecedor_shopee anuncio_fornecedor_shopee[]
+  fornecedor_produto        fornecedor_produto[]
+  produto_descricao         produto_descricao[]
+  produto_variacao          produto_variacao[]
+}
+
+model produto_atributo_variacao {
+  id                  Int              @id @default(autoincrement())
+  produto_variacao_id Int
+  nome_attr           String           @db.VarChar(100)
+  valor_attr          String           @db.VarChar(150)
+  produto_variacao    produto_variacao @relation(fields: [produto_variacao_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_produto_attr")
+
+  @@index([produto_variacao_id], map: "fk_produto_attr")
+}
+
+model produto_descricao {
+  id         Int     @id @default(autoincrement())
+  produto_id Int
+  descricao  String  @db.Text
+  produto    produto @relation(fields: [produto_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_produto_desc")
+
+  @@index([produto_id], map: "fk_produto_desc")
+}
+
+model produto_variacao {
+  id                        Int                         @id @default(autoincrement())
+  produto_id                Int
+  sku                       String                      @db.VarChar(100)
+  estoque                   Int?                        @default(0)
+  custo                     Decimal?                    @default(0.00) @db.Decimal(10, 2)
+  produto_atributo_variacao produto_atributo_variacao[]
+  produto                   produto                     @relation(fields: [produto_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_produto_var")
+
+  @@index([produto_id], map: "fk_produto_var")
+}
+
+model searchproduct {
+  id                                     Int             @id @default(autoincrement())
+  itemid                                 BigInt
+  shopid                                 BigInt
+  name                                   String?
+  shop_name                              String?
+  apiVersion                             String?
+  catid                                  Int?
+  brand                                  String?
+  image                                  String?
+  images                                 Json?
+  price_raw                              Int?
+  price_min_raw                          Int?
+  price_max_raw                          Int?
+  price_before_discount_raw              Int?
+  price_min_before_discount_raw          Int?
+  price_max_before_discount_raw          Int?
+  price                                  Float?
+  price_min                              Float?
+  price_max                              Float?
+  price_before_discount                  Float?
+  price_min_before_discount              Float?
+  price_max_before_discount              Float?
+  currency                               String?
+  stock                                  Int?
+  sold                                   Int?
+  historical_sold                        Int?
+  liked                                  Boolean?
+  liked_count                            Int?
+  cmt_count                              Int?
+  view_count                             Int?
+  rating_star                            Float?
+  rating_count_total                     Int?
+  rcount_with_context                    Int?
+  rcount_with_image                      Int?
+  rating_count_dist                      Json?
+  tier_variations                        Json?
+  video_info_list                        Json?
+  shopee_verified                        Boolean?
+  is_official_shop                       Boolean?
+  is_preferred_plus_seller               Boolean?
+  item_status                            String?
+  status                                 Int?
+  shop_location                          String?
+  ctime                                  Int?
+  item_type                              Int?
+  reference_item_id                      String?
+  transparent_background_image           String?
+  is_adult                               Boolean?
+  has_lowest_price_guarantee             Boolean?
+  is_cc_installment_payment_eligible     Boolean?
+  is_non_cc_installment_payment_eligible Boolean?
+  is_on_flash_sale                       Boolean?
+  can_use_cod                            Boolean?
+  can_use_wholesale                      Boolean?
+  bundle_deal_id                         BigInt?
+  bundle_deal_label                      String?
+  voucher_promotion_id                   BigInt?
+  model_id                               BigInt?
+  display_price_raw                      Int?
+  strikethrough_price_raw                Int?
+  original_price_raw                     Int?
+  discount_numeric                       Int?
+  display_price                          Float?
+  strikethrough_price                    Float?
+  original_price                         Float?
+  adsid                                  BigInt?
+  campaignid                             BigInt?
+  data                                   Json?
+  capturedAt                             DateTime
+  createdAt                              DateTime        @default(now())
+  updatedAt                              DateTime
+  lastSeenAt                             DateTime        @default(now())
+  seenCount                              Int             @default(1)
+  lastPdpAt                              DateTime?
+  nextPdpAt                              DateTime?
+  productdetail                          productdetail[]
+
+  @@unique([itemid, shopid], map: "SearchProduct_itemid_shopid_key")
+  @@index([itemid], map: "SearchProduct_itemid_idx")
+  @@index([nextPdpAt], map: "SearchProduct_nextPdpAt_idx")
+  @@index([shopid], map: "SearchProduct_shopid_idx")
+}
+
+model sku_sequence_shopee {
+  id          Int    @id @default(autoincrement()) @db.UnsignedInt
+  last_valuem BigInt @default(0) @db.UnsignedBigInt
+}
